@@ -20,7 +20,7 @@ client.on('interactionCreate', async interaction => {
 		await interaction.reply(`Server: ${interaction.guild.name}\nMember Count: ${interaction.guild.memberCount}`);
 	}
 	else if (commandName === 'user') {
-		await interaction.reply('');
+		await interaction.reply('test');
 	}
 });
 
