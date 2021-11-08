@@ -12,7 +12,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setTitle(`${mentionedUser.tag}'s avatar:`)
 			.setImage(mentionedUser.displayAvatarURL())
-			.setDescription(`URL: ${interaction.user.displayAvatarURL()}`)
+			.setDescription(`URL: ${mentionedUser.displayAvatarURL()}`)
 			.setFooter('わっしょい！')
 			.setColor([255, 165, 0]);
 		await interaction.reply({ embeds: [embed] });
