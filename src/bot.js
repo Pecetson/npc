@@ -2,11 +2,13 @@ const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const dotenv = require('dotenv');
 dotenv.config();
+
 // new Client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -15,13 +17,20 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-// Applies only once when the bot is ready.
-client.once('ready', () => {
-	console.log('Pecet logged in!');
-});
+for (const file of eventFiles) {
+	const event = require(`./events/${file}`);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	}
+	else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
+
 // on function goes async and arrow.
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
+	if (interaction.user.bot) return;
 
 	const command = client.commands.get(interaction.commandName);
 
@@ -32,10 +41,17 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (error) {
 		console.error(error);
-		await interaction.reply({ content: 'There was an errorn while executing this command.', ephemeral: true });
+		console.log(`The user who broke it: ${interaction.user.tag}`);
+		await interaction.reply({ content: 'There was an error while executing this command.', ephemeral: true });
 	}
 
 });
+
+// client.on('message', async message => {
+// 	if (!message.startsWith('!')) return;
+//
+// 	const msgCmd = message;
+// });
 
 // Login to Discord
 client.login(process.env.DISCORD_BOT_TOKEN);

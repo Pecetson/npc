@@ -6,7 +6,8 @@
   "scripts": {
     "test": "testcommand",
     "start": "node ./src/bot.js",
-    "dev": "nodemon ./src/bot.js"
+    "dev": "nodemon ./src/bot.js",
+    "updatecmd": "nodemon ./deploy-commands.js"
   },
   "repository": {
     "type": "git",
